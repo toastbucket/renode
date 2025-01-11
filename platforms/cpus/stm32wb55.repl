@@ -1,0 +1,75 @@
+sram: Memory.MappedMemory @ sysbus 0x20000000
+    size: 0x30000
+
+flash: Memory.MappedMemory @ sysbus 0x08000000
+    size: 0x100000
+
+flash_controller: MTD.STM32F4_FlashController @ {
+        sysbus 0x58004000;
+        sysbus new Bus.BusMultiRegistration { address: 0x1FFF8000; size: 0x80; region: "optionBytes" }
+    }
+    flash: flash
+
+rcc: Python.PythonPeripheral @ sysbus 0x58000000
+    size: 0x400
+    initable: true
+    filename: "scripts/pydev/stm32wb55_rcc.py"
+
+hsem: Miscellaneous.STM32H7_HardwareSemaphore @ sysbus 0x58001400
+
+usart1: UART.STM32F7_USART @ sysbus 0x40013800
+    frequency: 200000000
+    IRQ -> nvic@36
+
+lpuart1: UART.STM32F7_USART @ sysbus 0x40008000
+    frequency: 200000000
+    lowPowerMode: true
+    IRQ -> nvic@48
+
+gpioPortA: GPIOPort.STM32_GPIOPort @ sysbus <0x48000000, +0x400>
+    modeResetValue: 0xABFFFFFF
+    outputSpeedResetValue: 0x0C000000
+    pullUpPullDownResetValue: 0x64000000
+    numberOfAFs: 16
+
+gpioPortB: GPIOPort.STM32_GPIOPort @ sysbus <0x48000400, +0x400>
+    modeResetValue: 0xFFFFFEBF
+    outputSpeedResetValue: 0x000000C0
+    pullUpPullDownResetValue: 0x00000100
+    numberOfAFs: 16
+
+gpioPortC: GPIOPort.STM32_GPIOPort @ sysbus <0x48000800, +0x400>
+    modeResetValue: 0xFFFFFFFF
+    outputSpeedResetValue: 0x00000000
+    pullUpPullDownResetValue: 0x00000000
+    numberOfAFs: 16
+
+gpioPortD: GPIOPort.STM32_GPIOPort @ sysbus <0x48000C00, +0x400>
+    modeResetValue: 0xFFFFFFFF
+    outputSpeedResetValue: 0x00000000
+    pullUpPullDownResetValue: 0x00000000
+    numberOfAFs: 16
+
+gpioPortE: GPIOPort.STM32_GPIOPort @ sysbus <0x48001000, +0x400>
+    modeResetValue: 0x000003FF
+    outputSpeedResetValue: 0x00000000
+    pullUpPullDownResetValue: 0x00000000
+    numberOfAFs: 16
+
+gpioPortH: GPIOPort.STM32_GPIOPort @ sysbus <0x48001C00, +0x400>
+    modeResetValue: 0x000000CF
+    outputSpeedResetValue: 0x00000000
+    pullUpPullDownResetValue: 0x00000000
+    numberOfAFs: 16
+
+pwr: Miscellaneous.STM32WBA_PWR @ sysbus 0x58000400
+
+nvic: IRQControllers.NVIC @ sysbus 0xE000E000
+    priorityMask: 0xF0
+    systickFrequency: 16000000
+    IRQ -> cpu@0
+    // TODO: determine appropriate systick freq
+
+cpu: CPU.CortexM @ sysbus
+    cpuType: "cortex-m4"
+    nvic: nvic
