@@ -1,0 +1,17 @@
+:name: STM32WB55 Nucleo
+:description: This script runs a blinky on an STM32WB55 Nucleo
+
+using sysbus
+$name?="STM32WB55 Blinky"
+mach create $name
+machine LoadPlatformDescription @platforms/cpus/stm32wb55.repl
+
+$bin?=@binaries/blinky-stm32wb55_nucleo.elf
+
+showAnalyzer sysbus.usart1
+
+sysbus SetHookBeforePeripheralWrite gpioPortB "if offset == 0x14: self.InfoLog('LED state changed to %x' % ((value >> 5) & 0x1))"
+
+sysbus LoadELF $bin
+
+machine StartGdbServer 3333
