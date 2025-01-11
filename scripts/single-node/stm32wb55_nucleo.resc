@@ -4,7 +4,7 @@
 using sysbus
 $name?="STM32WB55 Blinky"
 mach create $name
-machine LoadPlatformDescription @platforms/cpus/stm32wb55.repl
+machine LoadPlatformDescription @platforms/boards/stm32wb55_nucleo.repl
 
 $bin?=@binaries/blinky-stm32wb55_nucleo.elf
 

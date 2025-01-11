@@ -1,0 +1,6 @@
+using "platforms/cpus/stm32wb55.repl"
+
+gpioPortB:
+    5 -> led_blue@0
+
+led_blue: Miscellaneous.LED @ gpioPortB 5
