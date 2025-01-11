@@ -13,5 +13,3 @@ showAnalyzer sysbus.usart1
 sysbus SetHookBeforePeripheralWrite gpioPortB "if offset == 0x14: self.InfoLog('LED state changed to %x' % ((value >> 5) & 0x1))"
 
 sysbus LoadELF $bin
-
-machine StartGdbServer 3333
